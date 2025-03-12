@@ -22,7 +22,7 @@ Litrevu is a Django web application designed for managing book and article revie
 
 ### Clone the project repository:
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/Ju-l-e-s/P9.git
 ```
 
 ### Navigate to the project directory:
@@ -42,7 +42,7 @@ python -m venv env
   ```
 - On macOS/Linux:
   ```bash
-  source env/bin/activate
+  source venv/bin/activate
   ```
 
 ### Install the dependencies:
@@ -137,9 +137,3 @@ litrevu/
 - Enhance the UI for a better user experience.
 - Add advanced search and filtering options in the feed.
 - Implement notifications for new reviews or tickets from followed users.
-
----
-
-## License
-
-This project is licensed under the MIT License. Feel free to use and modify it as needed.
