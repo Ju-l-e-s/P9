@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Supprimer le ticket : "{{ ticket.title }}"</h1>
+<p>Êtes-vous sûr de vouloir supprimer ce ticket ? Cette action est irréversible.</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Supprimer définitivement</button>
+    <a href="{% url 'feed' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

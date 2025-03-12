@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur CSRF</title>
+</head>
+<body>
+    <h1>Erreur de vérification CSRF</h1>
+    <p>Une erreur s'est produite pendant la vérification CSRF. Veuillez réessayer.</p>
+    <p>Raison : {{ reason }}</p>
+    <a href="{% url 'login' %}">Retour à la page de connexion</a>
+</body>
+</html>

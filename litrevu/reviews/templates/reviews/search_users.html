@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Rechercher un utilisateur</h1>
+
+<form method="get" action="{% url 'search_users' %}" class="row g-3 mb-4">
+    <div class="col-auto">
+        <input type="text" name="q" class="form-control" placeholder="Rechercher un utilisateur..." value="{{ query }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+</form>
+
+{% if results_with_follow_status %}
+    <h2 class="mb-3">Résultats de recherche</h2>
+    <ul class="list-group mb-5">
+        {% for result in results_with_follow_status %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ result.user.username }}
+                {% if result.is_followed %}
+                    <form method="post" action="{% url 'search_users' %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="followed_user_id" value="{{ result.user.id }}">
+                        <input type="hidden" name="action" value="unfollow">
+                        <button type="submit" class="btn btn-warning btn-sm">Ne plus suivre</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'search_users' %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="followed_user_id" value="{{ result.user.id }}">
+                        <input type="hidden" name="action" value="follow">
+                        <button type="submit" class="btn btn-success btn-sm">Suivre</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucun résultat trouvé.</p>
+{% endif %}
+
+<h2 class="mb-3">Mes abonnements</h2>
+<ul class="list-group">
+    {% for follow in followed_users %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ follow.followed_user.username }}
+            <form method="post" action="{% url 'search_users' %}" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="followed_user_id" value="{{ follow.followed_user.id }}">
+                <input type="hidden" name="action" value="unfollow">
+                <button type="submit" class="btn btn-warning btn-sm">Ne plus suivre</button>
+            </form>
+        </li>
+    {% empty %}
+        <p>Vous ne suivez aucun utilisateur pour le moment.</p>
+    {% endfor %}
+</ul>
+{% endblock %}
