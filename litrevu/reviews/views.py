@@ -11,6 +11,7 @@ from itertools import chain
 from django.db.models import CharField, Value
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib import messages
 
 
 def redirect_to_feed(request):
@@ -60,7 +61,7 @@ def edit_ticket(request: HttpRequest, ticket_id: int) -> HttpResponse:
     """
     ticket = Ticket.objects.get(id=ticket_id)
 
-    if request.user != ticket.user:
+    if request.user != ticket.user and not request.user.is_superuser:
         print("Accès refusé : vous ne pouvez modifier que vos propres tickets !")
         return redirect('feed')
 
@@ -167,7 +168,8 @@ def edit_review(request: HttpRequest, review_id: int) -> HttpResponse:
 
     review = get_object_or_404(Review, id=review_id)
 
-    if request.user != review.user:
+    if request.user != review.user and not request.user.is_superuser:
+        print("Accès refusé : vous ne pouvez modifier que vos propres critiques !")
         return redirect('feed')
 
     if request.method == 'POST':
@@ -296,7 +298,6 @@ def feed(request: HttpRequest) -> HttpResponse:
     :return: The HTTP response object with the rendered feed page.
     :rtype: HttpResponse
     """
-def feed(request):
     # Check if the user is an admin
     if request.user.is_superuser:
         # The admin sees all tickets and reviews
@@ -351,6 +352,7 @@ def search_users(request: HttpRequest) -> HttpResponse:
     """
     from django.db.models import Q
 
+
     query = request.GET.get('q', '')
     results = []
     followed_users = UserFollows.objects.filter(user=request.user)
@@ -359,7 +361,7 @@ def search_users(request: HttpRequest) -> HttpResponse:
     if query:
         results = User.objects.filter(
             Q(username__icontains=query)
-        ).exclude(id=request.user.id)  # Exclude the logged-in user
+        ).exclude(id=request.user.id)
 
     if request.method == 'POST':
         followed_user_id = request.POST.get('followed_user_id')
@@ -369,14 +371,12 @@ def search_users(request: HttpRequest) -> HttpResponse:
             followed_user = User.objects.get(id=followed_user_id)
 
             if action == 'follow':
-                if not UserFollows.objects.filter(user=request.user, followed_user=followed_user).exists():
-                    UserFollows.objects.create(user=request.user, followed_user=followed_user)
+                UserFollows.objects.get_or_create(user=request.user, followed_user=followed_user)
             elif action == 'unfollow':
                 UserFollows.objects.filter(user=request.user, followed_user=followed_user).delete()
 
             return redirect('search_users')
 
-    # Add an indicator for each user, indicating if they are followed or not
     results_with_follow_status = [
         {
             'user': user,
@@ -387,8 +387,7 @@ def search_users(request: HttpRequest) -> HttpResponse:
 
     context = {
         'results_with_follow_status': results_with_follow_status,
-        'followed_users': followed_users,  # List of users followed by the logged-in user
+        'followed_users': followed_users,
         'query': query,
     }
     return render(request, 'reviews/search_users.html', context)
-

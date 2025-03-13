@@ -49,7 +49,15 @@ python -m venv env
 ```bash
 pip install -r requirements.txt
 ```
-
+### Apply database migrations
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+### (Optional) Create a superuser
+```bash
+python manage.py createsuperuser
+```
 ---
 
 ## Usage
