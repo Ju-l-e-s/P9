@@ -35,8 +35,25 @@
         </div>
 
         <div class="mb-3">
-            <label for="id_rating" class="form-label">Note :</label>
-            {{ review_form.rating|add_class:"form-control" }}
+            <label class="form-label">Note :</label>
+            <div class="d-flex align-items-center justify-content-start flex-wrap" style="gap: 10px;">
+                {% for value, label in review_form.rating.field.choices %}
+                    <div class="form-check">
+                        <input
+                            type="radio"
+                            name="{{ review_form.rating.html_name }}"
+                            id="id_rating_{{ value }}"
+                            value="{{ value }}"
+                            class="form-check-input"
+                            {% if review_form.rating.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %}
+                            aria-describedby="error_rating"
+                        >
+                        <label for="id_rating_{{ value }}" class="form-check-label">
+                            {{ value }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
 
         <div class="mb-3">
