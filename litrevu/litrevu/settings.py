@@ -138,7 +138,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 # Redirect after login
-LOGIN_REDIRECT_URL = 'feed'  # Ou l'URL où vous souhaitez rediriger après connexion
+LOGIN_REDIRECT_URL = 'feed'
 LOGOUT_REDIRECT_URL = 'login'
 
 # URL for login
